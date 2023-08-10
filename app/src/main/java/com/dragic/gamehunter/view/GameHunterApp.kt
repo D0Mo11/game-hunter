@@ -1,5 +1,7 @@
 package com.dragic.gamehunter.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -16,40 +18,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dragic.gamehunter.view.navigation.Details
-import com.dragic.gamehunter.view.navigation.Favorites
 import com.dragic.gamehunter.view.navigation.Home
 import com.dragic.gamehunter.view.navigation.Navigation
 import com.dragic.gamehunter.view.uicomponents.BottomBar
-import com.dragic.gamehunter.view.uicomponents.TopBar
-import com.dragic.gamehunter.viewmodel.HomeViewModel
 
 private const val TWEEN_VISIBILITY_ANIMATION_DURATION = 500
 
+@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameHunterApp() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val route = navBackStackEntry?.destination?.route ?: Home.route
-    val viewModel: HomeViewModel = hiltViewModel()
+    val currentRoute = navBackStackEntry?.destination?.route ?: Home.route
 
     Scaffold(
-        topBar = {
-            if (route == Favorites.route || route == Details.routeWithArgs) {
-                TopBar(
-                    currentScreenRoute = route,
-                    onSortCLicked = { viewModel.setShowDialog(true) },
-                    onArrowBackClicked = { navController.navigateUp() },
-                )
-            }
-        },
         bottomBar = {
             AnimatedVisibility(
-                visible = route != Details.routeWithArgs,
+                visible = currentRoute != Details.routeWithArgs,
                 enter = slideInVertically(
                     animationSpec = tween(TWEEN_VISIBILITY_ANIMATION_DURATION, easing = LinearEasing)
                 ) + fadeIn(),
@@ -59,18 +48,13 @@ fun GameHunterApp() {
             ) {
                 NavigationBar(Modifier.background(MaterialTheme.colorScheme.background)) {
                     BottomBar(
-                        route = route,
+                        route = currentRoute,
                         onRouteSelected = { targetRoute ->
-                            navController.apply {
-                                navigate(targetRoute) {
-                                    restoreState = true
-                                    launchSingleTop = true
-                                    graph.startDestinationRoute?.let { route ->
-                                        popUpTo(route = route) {
-                                            saveState = true
-                                        }
-                                    }
-                                    popBackStack()
+                            navController.navigate(targetRoute) {
+                                restoreState = true
+                                popUpTo(currentRoute) {
+                                    saveState = true
+                                    inclusive = true
                                 }
                             }
                         }

@@ -1,7 +1,13 @@
 package com.dragic.gamehunter.networking
 
+import com.dragic.gamehunter.model.GameCheapestPrice
+import com.dragic.gamehunter.model.GameDetailsDeal
+import com.dragic.gamehunter.model.GameDetailsEntity
+import com.dragic.gamehunter.model.GameInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+const val DEAL_REDIRECT_LINK_PREFIX = "https://www.cheapshark.com/redirect?dealID="
 
 @Serializable
 data class GameDetailsResponse(
@@ -41,4 +47,22 @@ data class DealDetailsResponse(
     val normalPrice: String,
     @SerialName("savings")
     val savings: String,
+)
+
+fun GameDetailsResponse.toGameDetailsEntity(id: Int) = GameDetailsEntity(
+    id = id,
+    info = GameInfo(info.title, info.thumbnail),
+    cheapestPrice = GameCheapestPrice(cheapestPrice.price.toDouble(), cheapestPrice.date),
+    deals = deals.map { it.toGameDetailsDeal() },
+    isFavorite = false,
+)
+
+fun DealDetailsResponse.toGameDetailsDeal() = GameDetailsDeal(
+    storeId = storeId,
+    storeName = "",
+    storeLogoUrl = "",
+    dealId = "$DEAL_REDIRECT_LINK_PREFIX$dealId",
+    salePrice = salePrice.toDouble(),
+    normalPrice = normalPrice.toDouble(),
+    savings = savings.toDouble(),
 )

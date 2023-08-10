@@ -1,62 +1,46 @@
 package com.dragic.gamehunter.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.dragic.gamehunter.GameHunterDatabase
+import com.dragic.gamehunter.di.IoDispatcher
 import com.dragic.gamehunter.model.DealEntity
 import com.dragic.gamehunter.model.GameDetailsDeal
 import com.dragic.gamehunter.model.GameDetailsEntity
 import com.dragic.gamehunter.model.StoreInfoEntity
 import com.dragic.gamehunter.networking.CheapSharkApi
-import com.dragic.gamehunter.utils.toDealEntity
-import com.dragic.gamehunter.utils.toGameDetailsEntity
-import com.dragic.gamehunter.utils.toStoreInfoEntity
+import com.dragic.gamehunter.networking.toDealEntity
+import com.dragic.gamehunter.networking.toGameDetailsEntity
+import com.dragic.gamehunter.networking.toStoreInfoEntity
 import gamehunterdb.GameEntity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
 
-interface DealRepository {
 
-    suspend fun dealData(): List<DealEntity>
-
-    fun gameDetailsData(gameId: Int): Flow<GameDetailsEntity>
-
-    suspend fun fetchGameDetailsData(gameId: Int)
-
-    suspend fun removeGameById(gameId: Long)
-
-    suspend fun insertGame(gameTitle: String, thumbnail: String, id: Long? = null)
-
-    suspend fun fetchStoreInfo()
-
-    fun getFavoriteGames(): Flow<List<GameEntity>>
-
-    fun getGameDealsDetails(): Flow<List<GameDetailsDeal>>
-
-    suspend fun dealDataByDealRating(): List<DealEntity>
-
-    suspend fun dealDataBySavings(): List<DealEntity>
-
-    suspend fun dealDataByReviews(): List<DealEntity>
-}
+const val BASE_STORE_LOGO_URL = "https://www.cheapshark.com"
 
 @Singleton
-class DealRepositoryImpl @Inject constructor(
+class DealRepository @Inject constructor(
     private val cheapSharkApi: CheapSharkApi,
     database: GameHunterDatabase,
-) : DealRepository {
+    @IoDispatcher private val ioDispatcher: CoroutineContext,
+) {
 
     private val queries = database.gameEntityQueries
     private val gameDetails = MutableSharedFlow<GameDetailsEntity>()
     private val storeInfo = MutableSharedFlow<List<StoreInfoEntity>>()
 
-    override suspend fun dealData(): List<DealEntity> = cheapSharkApi.getAllDeals().map { it.toDealEntity() }
+    @RequiresApi(Build.VERSION_CODES.R)
+    suspend fun dealData(): List<DealEntity> = cheapSharkApi.getAllDeals().map { it.toDealEntity() }
 
-    override fun gameDetailsData(gameId: Int): Flow<GameDetailsEntity> =
+    fun gameDetailsData(): Flow<GameDetailsEntity> =
         combine(
             gameDetails,
             getFavoriteGames(),
@@ -65,11 +49,14 @@ class DealRepositoryImpl @Inject constructor(
             game.copy(isFavorite = favGame != null)
         }
 
-    override suspend fun fetchGameDetailsData(gameId: Int) = gameDetails.emit(cheapSharkApi.getGameDetails(gameId).toGameDetailsEntity(id = gameId))
+    suspend fun fetchGameDetailsData(gameId: Int) {
+        gameDetails.emit(cheapSharkApi.getGameDetails(gameId).toGameDetailsEntity(id = gameId))
+        storeInfo.emit(cheapSharkApi.getStoreInfo().map { it.toStoreInfoEntity() })
+    }
 
-    override fun getFavoriteGames(): Flow<List<GameEntity>> = queries.getAllGames().asFlow().mapToList(Dispatchers.IO)
+    fun getFavoriteGames(): Flow<List<GameEntity>> = queries.getAllGames().asFlow().mapToList(ioDispatcher)
 
-    override fun getGameDealsDetails(): Flow<List<GameDetailsDeal>> =
+    fun getGameDealsDetails(): Flow<List<GameDetailsDeal>> =
         combine(
             gameDetails,
             storeInfo
@@ -78,24 +65,27 @@ class DealRepositoryImpl @Inject constructor(
             details.deals.map {
                 it.copy(
                     storeName = storeIdToStoreInfoMap[it.storeId]!!.storeName,
-                    storeLogo = storeIdToStoreInfoMap[it.storeId]!!.logo,
+                    storeLogoUrl = "$BASE_STORE_LOGO_URL${storeIdToStoreInfoMap[it.storeId]!!.logoUrl}",
                 )
             }
         }
 
-    override suspend fun dealDataByDealRating(): List<DealEntity> = cheapSharkApi.getAllDealsByDealRating().map { it.toDealEntity() }
+    @RequiresApi(Build.VERSION_CODES.R)
+    suspend fun dealDataByDealRating(): List<DealEntity> = cheapSharkApi.getAllDealsByDealRating().map { it.toDealEntity() }
+    @RequiresApi(Build.VERSION_CODES.R)
+    suspend fun dealDataBySavings(): List<DealEntity> = cheapSharkApi.getAllDealsBySavings().map { it.toDealEntity() }
+    @RequiresApi(Build.VERSION_CODES.R)
+    suspend fun dealDataByReviews(): List<DealEntity> = cheapSharkApi.getAllDealsByReviews().map { it.toDealEntity() }
 
-    override suspend fun dealDataBySavings(): List<DealEntity> = cheapSharkApi.getAllDealsBySavings().map { it.toDealEntity() }
+    suspend fun removeGameById(gameId: Long) = withContext(ioDispatcher) {
+        queries.deleteGameById(gameId)
+    }
 
-    override suspend fun dealDataByReviews(): List<DealEntity> = cheapSharkApi.getAllDealsByReviews().map { it.toDealEntity() }
-
-    override suspend fun removeGameById(gameId: Long) = queries.deleteGameById(gameId)
-
-    override suspend fun insertGame(gameTitle: String, thumbnail: String, id: Long?) = queries.insertGame(
-        id = id,
-        title = gameTitle,
-        thumbnail = thumbnail
-    )
-
-    override suspend fun fetchStoreInfo() = storeInfo.emit(cheapSharkApi.getStoreInfo().map { it.toStoreInfoEntity() })
+    suspend fun insertGame(gameTitle: String, thumbnail: String, id: Long?) = withContext(ioDispatcher) {
+        queries.insertGame(
+            id = id,
+            title = gameTitle,
+            thumbnail = thumbnail
+        )
+    }
 }

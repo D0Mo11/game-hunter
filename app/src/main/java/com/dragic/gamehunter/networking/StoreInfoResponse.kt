@@ -1,5 +1,6 @@
 package com.dragic.gamehunter.networking
 
+import com.dragic.gamehunter.model.StoreInfoEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,5 +17,11 @@ data class StoreInfoResponse(
 @Serializable
 data class ImageDataResponse(
     @SerialName("logo")
-    val logo: String,
+    val logoUrl: String,
+)
+
+fun StoreInfoResponse.toStoreInfoEntity() = StoreInfoEntity(
+    storeId = storeId,
+    storeName = storeName,
+    logoUrl = images.logoUrl,
 )

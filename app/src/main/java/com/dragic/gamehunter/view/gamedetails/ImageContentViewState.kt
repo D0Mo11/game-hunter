@@ -1,5 +1,11 @@
 package com.dragic.gamehunter.view.gamedetails
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.dragic.gamehunter.model.GameDetailsEntity
+import com.dragic.gamehunter.utils.getDateString
+import com.dragic.gamehunter.utils.priceToUsd
+
 data class ImageContentViewState(
     val id: Int,
     val gameTitle: String,
@@ -7,4 +13,14 @@ data class ImageContentViewState(
     val lowestPrice: String,
     val dateLowestPrice: String,
     val isFavorite: Boolean,
+)
+
+@RequiresApi(Build.VERSION_CODES.R)
+fun GameDetailsEntity.toImageContentViewState() = ImageContentViewState(
+    id = id,
+    gameTitle = info.title,
+    thumbnail = info.thumbnail,
+    lowestPrice = priceToUsd(cheapestPrice.price),
+    dateLowestPrice = getDateString(cheapestPrice.date),
+    isFavorite = isFavorite,
 )

@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,42 +24,47 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import com.dragic.gamehunter.R
-import com.dragic.gamehunter.view.navigation.Home
-import com.dragic.gamehunter.view.uicomponents.TopBar
-import com.dragic.gamehunter.viewmodel.HomeViewModel
+import com.dragic.gamehunter.view.uicomponents.HomeTopBar
 
 @Composable
 fun HomeScreen(
     onDealClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel,
-    dialogState: Boolean,
+    dealState: List<DealViewState>,
+    onSortByDealRatingClick: () -> Unit,
+    onSortBySavingsClick: () -> Unit,
+    onSortByReviewsClick: () -> Unit,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier.fillMaxSize()
     ) {
         Column {
-            TopBar(currentScreenRoute = Home.route, onSortCLicked = { homeViewModel.setShowDialog(true) }) { }
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.home_text_padding)))
+            HomeTopBar(
+                onSortCLicked = { showDialog = true }
+            )
             Text(
                 modifier = Modifier
                     .padding(
-                        horizontal = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
+                        top = dimensionResource(id = R.dimen.home_text_padding),
+                        start = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
+                        end = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
+                        bottom = dimensionResource(id = R.dimen.text_padding_medium),
                     ),
                 text = stringResource(id = R.string.top_deals),
                 style = MaterialTheme.typography.labelLarge
             )
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
             HomeDeals(
-                deals = homeViewModel.dealData,
+                deals = dealState,
                 onDealClick = { id ->
                     onDealClick(id)
                 },
                 modifier = modifier.fillMaxWidth(),
             )
         }
-        if (dialogState) {
-            Dialog(onDismissRequest = { homeViewModel.setShowDialog(false) }) {
+        if (showDialog) {
+            Dialog(onDismissRequest = { showDialog = false }) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -71,6 +80,7 @@ fun HomeScreen(
                         Text(
                             text = stringResource(id = R.string.home_dialog_sort_by),
                             style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.text_padding_medium))
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
                         Text(
@@ -78,8 +88,8 @@ fun HomeScreen(
                             modifier = Modifier
                                 .padding(dimensionResource(id = R.dimen.text_padding_small))
                                 .clickable {
-                                    homeViewModel.fetchDealsByDealRating()
-                                    homeViewModel.setShowDialog(false)
+                                    onSortByDealRatingClick()
+                                    showDialog = false
                                 },
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
@@ -88,8 +98,8 @@ fun HomeScreen(
                             modifier = Modifier
                                 .padding(dimensionResource(id = R.dimen.text_padding_small))
                                 .clickable {
-                                    homeViewModel.fetchDealsBySavings()
-                                    homeViewModel.setShowDialog(false)
+                                    onSortBySavingsClick()
+                                    showDialog = false
                                 }
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
@@ -98,8 +108,8 @@ fun HomeScreen(
                             modifier = Modifier
                                 .padding(dimensionResource(id = R.dimen.text_padding_small))
                                 .clickable {
-                                    homeViewModel.fetchDealsByReviews()
-                                    homeViewModel.setShowDialog(false)
+                                    onSortByReviewsClick()
+                                    showDialog = false
                                 }
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))

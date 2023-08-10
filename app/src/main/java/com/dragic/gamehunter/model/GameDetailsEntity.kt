@@ -14,16 +14,16 @@ data class GameInfo(
 )
 
 data class GameCheapestPrice(
-    val price: String,
+    val price: Double,
     val date: Int,
 )
 
 data class GameDetailsDeal(
     val storeId: String,
     val storeName: String,
-    val storeLogo: String,
+    val storeLogoUrl: String,
     val dealId: String,
-    val salePrice: String,
-    val normalPrice: String,
-    val savings: Int,
+    val salePrice: Double,
+    val normalPrice: Double,
+    val savings: Double,
 )

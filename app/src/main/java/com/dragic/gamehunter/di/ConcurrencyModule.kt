@@ -3,23 +3,28 @@ package com.dragic.gamehunter.di
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
+import javax.inject.Qualifier
 import kotlin.coroutines.CoroutineContext
 
-const val BG_DISPATCHER = "BackgroundDispatcher"
-const val MAIN_DISPATCHER = "MainDispatcher"
-
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object ConcurrencyModule {
 
     @Provides
-    @Named(BG_DISPATCHER)
-    fun provideBackgroundDispatcher(): CoroutineContext = Dispatchers.IO
+    @IoDispatcher
+    fun provideIoDispatcher(): CoroutineContext = Dispatchers.IO
 
     @Provides
-    @Named(MAIN_DISPATCHER)
-    fun provideMainDispatcher(): CoroutineContext = Dispatchers.Main
+    @ComputationDispatcher
+    fun provideComputationDispatcher(): CoroutineContext = Dispatchers.Default
 }
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ComputationDispatcher
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class IoDispatcher

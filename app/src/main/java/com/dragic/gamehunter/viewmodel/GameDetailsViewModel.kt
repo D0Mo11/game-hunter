@@ -1,30 +1,27 @@
 package com.dragic.gamehunter.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dragic.gamehunter.di.BG_DISPATCHER
 import com.dragic.gamehunter.di.GameId
 import com.dragic.gamehunter.repository.DealRepository
-import com.dragic.gamehunter.utils.toDealDetailsViewState
-import com.dragic.gamehunter.utils.toImageContentViewState
 import com.dragic.gamehunter.view.gamedetails.DealDetailsViewState
 import com.dragic.gamehunter.view.gamedetails.ImageContentViewState
+import com.dragic.gamehunter.view.gamedetails.toDealDetailsViewState
+import com.dragic.gamehunter.view.gamedetails.toImageContentViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
-import kotlin.coroutines.CoroutineContext
 
-const val DEAL_REDIRECT_LINK_PREFIX = "https://www.cheapshark.com/redirect?dealID="
-
+@RequiresApi(Build.VERSION_CODES.R)
 @HiltViewModel
 class GameDetailsViewModel @Inject constructor(
     private val repository: DealRepository,
     @GameId private val gameId: Int,
-    @Named(BG_DISPATCHER) private val bgDispatcher: CoroutineContext,
 ) : ViewModel() {
     var gameData by mutableStateOf<ImageContentViewState?>(null)
         private set
@@ -32,18 +29,15 @@ class GameDetailsViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch {
             repository.fetchGameDetailsData(gameId)
         }
-        viewModelScope.launch(bgDispatcher) {
-            repository.fetchStoreInfo()
-        }
-        viewModelScope.launch(bgDispatcher) {
-            repository.gameDetailsData(gameId).collect { gameDetails ->
+        viewModelScope.launch {
+            repository.gameDetailsData().collect { gameDetails ->
                 gameData = gameDetails.toImageContentViewState()
             }
         }
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch {
             repository.getGameDealsDetails().collect { dealDetails ->
                 dealData = dealDetails.map { it.toDealDetailsViewState() }
             }
@@ -51,7 +45,7 @@ class GameDetailsViewModel @Inject constructor(
     }
 
     fun refreshFavoriteMovie() {
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch {
             val game = gameData
             if (game != null) {
                 if (game.isFavorite) repository.removeGameById(gameId.toLong()) else repository.insertGame(
@@ -62,6 +56,4 @@ class GameDetailsViewModel @Inject constructor(
             }
         }
     }
-
-    fun dealUriFromDealId(dealId: String): String = "$DEAL_REDIRECT_LINK_PREFIX$dealId"
 }

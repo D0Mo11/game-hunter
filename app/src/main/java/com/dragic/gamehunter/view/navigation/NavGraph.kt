@@ -1,5 +1,7 @@
 package com.dragic.gamehunter.view.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -15,6 +17,7 @@ import com.dragic.gamehunter.viewmodel.FavoritesViewModel
 import com.dragic.gamehunter.viewmodel.GameDetailsViewModel
 import com.dragic.gamehunter.viewmodel.HomeViewModel
 
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -31,8 +34,10 @@ fun Navigation(
                 onDealClick = { dealId ->
                     navController.navigateToDetails(dealId)
                 },
-                homeViewModel = viewModel,
-                dialogState = viewModel.sortDialogState
+                dealState = viewModel.dealData,
+                onSortByDealRatingClick = { viewModel.fetchDealsByDealRating() },
+                onSortByReviewsClick = { viewModel.fetchDealsByReviews() },
+                onSortBySavingsClick = { viewModel.fetchDealsBySavings() },
             )
         }
         composable(route = Favorites.route) {
@@ -41,7 +46,7 @@ fun Navigation(
                 onGameClick = { gameId ->
                     navController.navigateToDetails(gameId)
                 },
-                favoritesViewModel = viewModel
+                favoriteGamesState = viewModel.favoriteGames,
             )
         }
         composable(
@@ -49,7 +54,14 @@ fun Navigation(
             arguments = Details.arguments
         ) {
             val viewModel: GameDetailsViewModel = hiltViewModel()
-            GameDetailsScreen(gameDetailsViewModel = viewModel, uriHandler = LocalUriHandler.current)
+            val uriHandler = LocalUriHandler.current
+            GameDetailsScreen(
+                imageContentState = viewModel.gameData,
+                dealDetailsState = viewModel.dealData,
+                onFavoriteClick = { viewModel.refreshFavoriteMovie() },
+                onDealClick = { uriHandler.openUri(it) },
+                onBackArrowClick = { navController.navigateUp() }
+            )
         }
     }
 }
