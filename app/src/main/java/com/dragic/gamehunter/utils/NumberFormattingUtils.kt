@@ -6,10 +6,7 @@ import android.icu.number.Precision
 import android.icu.util.Currency
 import android.icu.util.MeasureUnit
 import android.icu.util.ULocale
-import android.os.Build
-import androidx.annotation.RequiresApi
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun priceToUsd(price: Double) = NumberFormatter
     .withLocale(ULocale.US)
     .notation(Notation.compactShort())
@@ -18,7 +15,6 @@ fun priceToUsd(price: Double) = NumberFormatter
     .format(price)
     .toString()
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun savingsToPercentage(savings: Double) = NumberFormatter
     .withLocale(ULocale.US)
     .unit(MeasureUnit.PERCENT)

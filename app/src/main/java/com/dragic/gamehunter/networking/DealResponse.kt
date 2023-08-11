@@ -1,7 +1,5 @@
 package com.dragic.gamehunter.networking
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.dragic.gamehunter.model.DealEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -26,7 +24,6 @@ data class DealResponse(
     val thumbnail: String,
 )
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun DealResponse.toDealEntity() = DealEntity(
     id = id,
     gameTitle = gameTitle,

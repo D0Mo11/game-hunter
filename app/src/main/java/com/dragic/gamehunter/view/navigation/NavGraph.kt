@@ -1,7 +1,5 @@
 package com.dragic.gamehunter.view.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -17,7 +15,6 @@ import com.dragic.gamehunter.viewmodel.FavoritesViewModel
 import com.dragic.gamehunter.viewmodel.GameDetailsViewModel
 import com.dragic.gamehunter.viewmodel.HomeViewModel
 
-@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun Navigation(
     navController: NavHostController,

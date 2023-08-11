@@ -1,7 +1,5 @@
 package com.dragic.gamehunter.view
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -27,7 +25,6 @@ import com.dragic.gamehunter.view.uicomponents.BottomBar
 
 private const val TWEEN_VISIBILITY_ANIMATION_DURATION = 500
 
-@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameHunterApp() {

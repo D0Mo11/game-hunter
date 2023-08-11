@@ -1,7 +1,5 @@
 package com.dragic.gamehunter.repository
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.dragic.gamehunter.GameHunterDatabase
@@ -24,7 +22,7 @@ import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
 
 
-const val BASE_STORE_LOGO_URL = "https://www.cheapshark.com"
+private const val BASE_STORE_LOGO_URL = "https://www.cheapshark.com"
 
 @Singleton
 class DealRepository @Inject constructor(
@@ -37,7 +35,6 @@ class DealRepository @Inject constructor(
     private val gameDetails = MutableSharedFlow<GameDetailsEntity>()
     private val storeInfo = MutableSharedFlow<List<StoreInfoEntity>>()
 
-    @RequiresApi(Build.VERSION_CODES.R)
     suspend fun dealData(): List<DealEntity> = cheapSharkApi.getAllDeals().map { it.toDealEntity() }
 
     fun gameDetailsData(): Flow<GameDetailsEntity> =
@@ -70,11 +67,8 @@ class DealRepository @Inject constructor(
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     suspend fun dealDataByDealRating(): List<DealEntity> = cheapSharkApi.getAllDealsByDealRating().map { it.toDealEntity() }
-    @RequiresApi(Build.VERSION_CODES.R)
     suspend fun dealDataBySavings(): List<DealEntity> = cheapSharkApi.getAllDealsBySavings().map { it.toDealEntity() }
-    @RequiresApi(Build.VERSION_CODES.R)
     suspend fun dealDataByReviews(): List<DealEntity> = cheapSharkApi.getAllDealsByReviews().map { it.toDealEntity() }
 
     suspend fun removeGameById(gameId: Long) = withContext(ioDispatcher) {

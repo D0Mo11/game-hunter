@@ -7,7 +7,7 @@ import com.dragic.gamehunter.model.GameInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-const val DEAL_REDIRECT_LINK_PREFIX = "https://www.cheapshark.com/redirect?dealID="
+private const val DEAL_REDIRECT_LINK_PREFIX = "https://www.cheapshark.com/redirect?dealID="
 
 @Serializable
 data class GameDetailsResponse(

@@ -19,4 +19,5 @@
     <string name="home_dialog_savings">Savings</string>
     <string name="home_dialog_reviews">Reviews</string>
     <string name="deal_image_content_description">Deal image</string>
+    <string name="savings_off">" OFF"</string>
 </resources>
