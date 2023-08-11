@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -115,11 +114,7 @@ fun DealCard(
                                 shape = RectangleShape
                             )
                             .padding(horizontal = dimensionResource(id = R.dimen.deal_card_save_percentage_padding)),
-                        text = buildAnnotatedString {
-                            append("-")
-                            append(savePercentage)
-                            append(stringResource(id = R.string.savings_off))
-                        },
+                        text = stringResource(id = R.string.savings_template, savePercentage),
                         style = Typography.bodyMedium
                     )
                     Row(
