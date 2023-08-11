@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    //Home Screen
+    <dimen name="home_top_deals_label_horizontal_padding">8dp</dimen>
+    <dimen name="home_dialog_box_padding">16dp</dimen>
+    <dimen name="home_text_padding">20dp</dimen>
+
+    //Details Screen
+    <dimen name="details_deal_card_radius">6dp</dimen>
+    <dimen name="details_image_height">280dp</dimen>
+    <dimen name="details_title_text_horizontal_padding">20dp</dimen>
+    <dimen name="details_deal_card_height">80dp</dimen>
+    <dimen name="details_deal_card_horizontal_padding">12dp</dimen>
+    <dimen name="details_text_padding">8dp</dimen>
+    <dimen name="details_content_top_padding">128dp</dimen>
+    <dimen name="details_text_padding_small">4dp</dimen>
+    <dimen name="details_content_end_padding">20dp</dimen>
+    <dimen name="details_deal_card_vertical_padding">8dp</dimen>
+    <dimen name="details_deal_card_store_image_size">64dp</dimen>
+    <dimen name="details_deal_card_store_image_padding">8dp</dimen>
+
+    //Favorites Screen
+    <dimen name="favorites_text_label_top_padding">8dp</dimen>
+    <dimen name="favorites_game_card_horizontal_padding">18dp</dimen>
+    <dimen name="favorites_game_card_top_padding">8dp</dimen>
+    <dimen name="favorites_text_top_padding">20dp</dimen>
+    <dimen name="favorites_text_label_end_padding">8dp</dimen>
+
+    //Deal Card
+    <dimen name="deal_card_height">100dp</dimen>
+    <dimen name="deal_card_padding">8dp</dimen>
+    <dimen name="deal_card_title_top_padding">6dp</dimen>
+    <dimen name="deal_card_image_size">12dp</dimen>
+    <dimen name="deal_card_text_size">14sp</dimen>
+    <dimen name="deal_card_title_horizontal_padding">14dp</dimen>
+    <dimen name="deal_card_image_end_padding">8dp</dimen>
+    <dimen name="deal_card_text_padding">12dp</dimen>
+    <dimen name="deal_card_text_padding_horizontal">8dp</dimen>
+    <dimen name="deal_card_text_padding_small">8dp</dimen>
+    <dimen name="deal_card_radius">6dp</dimen>
+    <dimen name="deal_card_save_percentage_padding">4dp</dimen>
+    <dimen name="deal_card_image_width">140dp</dimen>
+
+    //Top Bar
+    <dimen name="top_bar_height">60dp</dimen>
+    <dimen name="top_bar_icon_padding">16dp</dimen>
+    <dimen name="top_bar_icon_size">48dp</dimen>
+
+    //Bottom Bar
+    <dimen name="bottom_bar_icon_padding">10dp</dimen>
+
+    //Favorite Game
+    <dimen name="favorite_game_horizontal_padding">24dp</dimen>
+    <dimen name="favorite_game_vertical_padding">24dp</dimen>
+    <dimen name="favorite_game_card_height">180dp</dimen>
+    <dimen name="favorite_game_card_radius">10dp</dimen>
+    <dimen name="favorite_game_card_image_height">130dp</dimen>
+    <dimen name="favorite_icon_start_padding">20dp</dimen>
+    <dimen name="favorite_icon_bottom_padding">20dp</dimen>
+    <dimen name="favorite_box_size">32dp</dimen>
+
+    //Game Card
+    <dimen name="game_card_title_top_padding">6dp</dimen>
+    <dimen name="game_card_title_horizontal_padding">14dp</dimen>
+
+    //Text
+    <dimen name="text_padding_medium">8dp</dimen>
+    <dimen name="text_padding_small">4dp</dimen>
+
+</resources>

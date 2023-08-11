@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">GameHunter</string>
+    <string name="top_deals">Top Deals:</string>
+    <string name="details_image_content_description">Deal Image</string>
+    <string name="deal_card_rating_label">"Rating: "</string>
+    <string name="back_arrow_content_description">back navigation</string>
+    <string name="search_icon_content_description">Search icon</string>
+    <string name="sort_icon_content_description">Sort icon</string>
+    <string name="lowest_price_text">"Lowest price:"</string>
+    <string name="details_text_on">"on"</string>
+    <string name="favorite_icon">Favorite icon</string>
+    <string name="featured_deals">Featured deals:</string>
+    <string name="deal_store_image_content_description">Store image</string>
+    <string name="favorite_games">Favorite games:</string>
+    <string name="favorite_game_content_description">Favorite game image</string>
+    <string name="deal_card_steam_rating_label">"Steam rating: "</string>
+    <string name="home_dialog_sort_by">Sort by:</string>
+    <string name="home_dialog_deal_rating">Deal rating</string>
+    <string name="home_dialog_savings">Savings</string>
+    <string name="home_dialog_reviews">Reviews</string>
+    <string name="deal_image_content_description">Deal image</string>
+    <string name="savings_template">-%s OFF</string>
 </resources>

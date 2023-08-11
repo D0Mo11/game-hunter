@@ -1,0 +1,14 @@
+CREATE TABLE gameEntity(
+    id INTEGER NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    thumbnail TEXT NOT NULL
+);
+
+getAllGames:
+SELECT * FROM gameEntity;
+
+insertGame:
+INSERT OR REPLACE INTO gameEntity VALUES (?, ?, ?);
+
+deleteGameById:
+DELETE FROM gameEntity WHERE  id = :id;
