@@ -57,3 +57,11 @@ fun GameHunterTheme(
         content = content
     )
 }
+
+enum class AppTheme {
+    LIGHT, DARK;
+
+    companion object {
+        fun fromOrdinal(ordinal: Int) = values()[ordinal]
+    }
+}

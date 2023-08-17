@@ -5,14 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,9 +27,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import com.dragic.gamehunter.R
+import com.dragic.gamehunter.view.theme.AppTheme
 import com.dragic.gamehunter.view.uicomponents.HomeTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onDealClick: (Int) -> Unit,
@@ -37,8 +38,11 @@ fun HomeScreen(
     onSortByDealRatingClick: () -> Unit,
     onSortBySavingsClick: () -> Unit,
     onSortByReviewsClick: () -> Unit,
+    theme: AppTheme,
+    onThemeChange: (AppTheme) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var switchState by remember { mutableStateOf(theme != AppTheme.LIGHT) }
 
     Scaffold(
         topBar = {
@@ -51,17 +55,33 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             Column {
-                Text(
+                Row(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(
                             top = dimensionResource(id = R.dimen.home_text_padding),
+                            bottom = dimensionResource(id = R.dimen.text_padding_medium),
                             start = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
                             end = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
-                            bottom = dimensionResource(id = R.dimen.text_padding_medium),
                         ),
-                    text = stringResource(id = R.string.top_deals),
-                    style = MaterialTheme.typography.labelLarge
-                )
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.top_deals),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "Dark mode ")
+                        Switch(
+                            checked = switchState,
+                            onCheckedChange = {
+                                switchState = it
+                                onThemeChange(theme)
+                            },
+                        )
+                    }
+                }
                 HomeDeals(
                     deals = dealState,
                     onDealClick = { id ->
