@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import com.dragic.gamehunter.R
 import com.dragic.gamehunter.view.uicomponents.HomeTopBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onDealClick: (Int) -> Unit,
@@ -37,82 +40,87 @@ fun HomeScreen(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column {
-            HomeTopBar(
-                onSortCLicked = { showDialog = true }
-            )
-            Text(
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(id = R.dimen.home_text_padding),
-                        start = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
-                        end = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
-                        bottom = dimensionResource(id = R.dimen.text_padding_medium),
-                    ),
-                text = stringResource(id = R.string.top_deals),
-                style = MaterialTheme.typography.labelLarge
-            )
-            HomeDeals(
-                deals = dealState,
-                onDealClick = { id ->
-                    onDealClick(id)
-                },
-                modifier = modifier.fillMaxWidth(),
-            )
+    Scaffold(
+        topBar = {
+            HomeTopBar(onSortCLicked = { showDialog = true })
         }
-        if (showDialog) {
-            Dialog(onDismissRequest = { showDialog = false }) {
-                Box(
+    ) { paddingValues ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column {
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White)
-                ) {
-                    Column(
+                        .padding(
+                            top = dimensionResource(id = R.dimen.home_text_padding),
+                            start = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
+                            end = dimensionResource(id = R.dimen.home_top_deals_label_horizontal_padding),
+                            bottom = dimensionResource(id = R.dimen.text_padding_medium),
+                        ),
+                    text = stringResource(id = R.string.top_deals),
+                    style = MaterialTheme.typography.labelLarge
+                )
+                HomeDeals(
+                    deals = dealState,
+                    onDealClick = { id ->
+                        onDealClick(id)
+                    },
+                    modifier = modifier.fillMaxWidth(),
+                )
+            }
+            if (showDialog) {
+                Dialog(onDismissRequest = { showDialog = false }) {
+                    Box(
                         modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.home_dialog_box_padding))
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                            .fillMaxWidth()
+                            .background(Color.White)
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.home_dialog_sort_by),
-                            style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.text_padding_medium))
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
-                        Text(
-                            text = stringResource(id = R.string.home_dialog_deal_rating),
+                        Column(
                             modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.text_padding_small))
-                                .clickable {
-                                    onSortByDealRatingClick()
-                                    showDialog = false
-                                },
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
-                        Text(
-                            text = stringResource(id = R.string.home_dialog_savings),
-                            modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.text_padding_small))
-                                .clickable {
-                                    onSortBySavingsClick()
-                                    showDialog = false
-                                }
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
-                        Text(
-                            text = stringResource(id = R.string.home_dialog_reviews),
-                            modifier = Modifier
-                                .padding(dimensionResource(id = R.dimen.text_padding_small))
-                                .clickable {
-                                    onSortByReviewsClick()
-                                    showDialog = false
-                                }
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
+                                .padding(dimensionResource(id = R.dimen.home_dialog_box_padding))
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.home_dialog_sort_by),
+                                style = MaterialTheme.typography.labelLarge,
+                                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.text_padding_medium))
+                            )
+                            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
+                            Text(
+                                text = stringResource(id = R.string.home_dialog_deal_rating),
+                                modifier = Modifier
+                                    .padding(dimensionResource(id = R.dimen.text_padding_small))
+                                    .clickable {
+                                        onSortByDealRatingClick()
+                                        showDialog = false
+                                    },
+                            )
+                            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
+                            Text(
+                                text = stringResource(id = R.string.home_dialog_savings),
+                                modifier = Modifier
+                                    .padding(dimensionResource(id = R.dimen.text_padding_small))
+                                    .clickable {
+                                        onSortBySavingsClick()
+                                        showDialog = false
+                                    }
+                            )
+                            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
+                            Text(
+                                text = stringResource(id = R.string.home_dialog_reviews),
+                                modifier = Modifier
+                                    .padding(dimensionResource(id = R.dimen.text_padding_small))
+                                    .clickable {
+                                        onSortByReviewsClick()
+                                        showDialog = false
+                                    }
+                            )
+                            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.text_padding_medium)))
+                        }
                     }
                 }
             }
