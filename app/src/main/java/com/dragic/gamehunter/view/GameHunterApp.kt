@@ -1,6 +1,5 @@
 package com.dragic.gamehunter.view
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -22,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.dragic.gamehunter.view.navigation.Details
 import com.dragic.gamehunter.view.navigation.Home
 import com.dragic.gamehunter.view.navigation.Navigation
+import com.dragic.gamehunter.view.theme.AppTheme
 import com.dragic.gamehunter.view.theme.GameHunterTheme
 import com.dragic.gamehunter.view.uicomponents.BottomBar
 import com.dragic.gamehunter.viewmodel.ThemeViewModel
@@ -34,10 +34,8 @@ fun GameHunterApp() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Home.route
     val themeViewModel: ThemeViewModel = hiltViewModel()
-    val useDarkColor = themeViewModel.useDarkColor
 
-    GameHunterTheme(darkTheme = useDarkColor) {
-        Log.d("ChangeTheme:", "In GameHunterTheme ${useDarkColor}")
+    GameHunterTheme(darkTheme = themeViewModel.appTheme == AppTheme.DARK) {
         Scaffold(
             bottomBar = {
                 AnimatedVisibility(
@@ -70,7 +68,7 @@ fun GameHunterApp() {
             Navigation(
                 navController = navController,
                 onThemeChange = themeViewModel::changeTheme,
-                theme = themeViewModel.appTheme.value,
+                theme = themeViewModel.appTheme,
                 modifier = Modifier.padding(innerPadding)
             )
         }

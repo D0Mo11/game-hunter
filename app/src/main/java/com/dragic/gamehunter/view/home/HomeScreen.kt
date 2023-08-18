@@ -42,7 +42,6 @@ fun HomeScreen(
     onThemeChange: (AppTheme) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var switchState by remember { mutableStateOf(theme != AppTheme.LIGHT) }
 
     Scaffold(
         topBar = {
@@ -72,11 +71,10 @@ fun HomeScreen(
                         style = MaterialTheme.typography.labelLarge
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Dark mode ")
+                        Text(text = stringResource(id = R.string.home_dark_mode))
                         Switch(
-                            checked = switchState,
+                            checked = theme == AppTheme.DARK,
                             onCheckedChange = {
-                                switchState = it
                                 onThemeChange(theme)
                             },
                         )
