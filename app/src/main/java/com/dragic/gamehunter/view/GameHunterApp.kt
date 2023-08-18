@@ -9,58 +9,68 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.dragic.gamehunter.view.navigation.Details
 import com.dragic.gamehunter.view.navigation.Home
 import com.dragic.gamehunter.view.navigation.Navigation
+import com.dragic.gamehunter.view.theme.AppTheme
+import com.dragic.gamehunter.view.theme.GameHunterTheme
 import com.dragic.gamehunter.view.uicomponents.BottomBar
+import com.dragic.gamehunter.viewmodel.ThemeViewModel
 
 private const val TWEEN_VISIBILITY_ANIMATION_DURATION = 500
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameHunterApp() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: Home.route
+    val themeViewModel: ThemeViewModel = hiltViewModel()
 
-    Scaffold(
-        bottomBar = {
-            AnimatedVisibility(
-                visible = currentRoute != Details.routeWithArgs,
-                enter = slideInVertically(
-                    animationSpec = tween(TWEEN_VISIBILITY_ANIMATION_DURATION, easing = LinearEasing)
-                ) + fadeIn(),
-                exit = slideOutVertically(
-                    animationSpec = tween(TWEEN_VISIBILITY_ANIMATION_DURATION, easing = LinearEasing)
-                ) + fadeOut(),
-            ) {
-                NavigationBar(Modifier.background(MaterialTheme.colorScheme.background)) {
-                    BottomBar(
-                        route = currentRoute,
-                        onRouteSelected = { targetRoute ->
-                            navController.navigate(targetRoute) {
-                                restoreState = true
-                                popUpTo(currentRoute) {
-                                    saveState = true
-                                    inclusive = true
+    GameHunterTheme(darkTheme = themeViewModel.appTheme == AppTheme.DARK) {
+        Scaffold(
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = currentRoute != Details.routeWithArgs,
+                    enter = slideInVertically(
+                        animationSpec = tween(TWEEN_VISIBILITY_ANIMATION_DURATION, easing = LinearEasing)
+                    ) + fadeIn(),
+                    exit = slideOutVertically(
+                        animationSpec = tween(TWEEN_VISIBILITY_ANIMATION_DURATION, easing = LinearEasing)
+                    ) + fadeOut(),
+                ) {
+                    NavigationBar(Modifier.background(MaterialTheme.colorScheme.background)) {
+                        BottomBar(
+                            route = currentRoute,
+                            onRouteSelected = { targetRoute ->
+                                navController.navigate(targetRoute) {
+                                    restoreState = true
+                                    popUpTo(currentRoute) {
+                                        saveState = true
+                                        inclusive = true
+                                    }
                                 }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
+                }
             }
+        ) { innerPadding ->
+            Navigation(
+                navController = navController,
+                onThemeChange = themeViewModel::changeTheme,
+                theme = themeViewModel.appTheme,
+                modifier = Modifier.padding(innerPadding)
+            )
         }
-    ) { innerPadding ->
-        Navigation(navController = navController, modifier = Modifier.padding(innerPadding))
     }
 }

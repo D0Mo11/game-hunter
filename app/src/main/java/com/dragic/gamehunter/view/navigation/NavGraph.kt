@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.dragic.gamehunter.view.favorites.FavoritesScreen
 import com.dragic.gamehunter.view.gamedetails.GameDetailsScreen
 import com.dragic.gamehunter.view.home.HomeScreen
+import com.dragic.gamehunter.view.theme.AppTheme
 import com.dragic.gamehunter.viewmodel.FavoritesViewModel
 import com.dragic.gamehunter.viewmodel.GameDetailsViewModel
 import com.dragic.gamehunter.viewmodel.HomeViewModel
@@ -18,6 +19,8 @@ import com.dragic.gamehunter.viewmodel.HomeViewModel
 @Composable
 fun Navigation(
     navController: NavHostController,
+    theme: AppTheme,
+    onThemeChange: (AppTheme) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -35,6 +38,8 @@ fun Navigation(
                 onSortByDealRatingClick = { viewModel.fetchDealsByDealRating() },
                 onSortByReviewsClick = { viewModel.fetchDealsByReviews() },
                 onSortBySavingsClick = { viewModel.fetchDealsBySavings() },
+                theme = theme,
+                onThemeChange = onThemeChange
             )
         }
         composable(route = Favorites.route) {
