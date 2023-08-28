@@ -20,7 +20,7 @@ fun GameDetailsDeals(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        items(deals) { deal: DealDetailsViewState ->
+        items(deals, key = { it.dealId }) { deal: DealDetailsViewState ->
             DealDetailsCard(
                 salePrice = deal.salePrice,
                 normalPrice = deal.normalPrice,
