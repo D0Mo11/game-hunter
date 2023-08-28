@@ -1,5 +1,6 @@
 package com.dragic.gamehunter.repository
 
+import android.util.Log
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.dragic.gamehunter.GameHunterDatabase
@@ -48,6 +49,7 @@ class DealRepository @Inject constructor(
 
     suspend fun fetchGameDetailsData(gameId: Int) {
         gameDetails.emit(cheapSharkApi.getGameDetails(gameId).toGameDetailsEntity(id = gameId))
+        Log.d("repo", "$gameDetails")
         storeInfo.emit(cheapSharkApi.getStoreInfo().map { it.toStoreInfoEntity() })
     }
 

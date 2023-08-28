@@ -1,6 +1,11 @@
 package com.dragic.gamehunter.view.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,6 +20,7 @@ import com.dragic.gamehunter.view.theme.AppTheme
 import com.dragic.gamehunter.viewmodel.FavoritesViewModel
 import com.dragic.gamehunter.viewmodel.GameDetailsViewModel
 import com.dragic.gamehunter.viewmodel.HomeViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun Navigation(
@@ -57,12 +63,19 @@ fun Navigation(
         ) {
             val viewModel: GameDetailsViewModel = hiltViewModel()
             val uriHandler = LocalUriHandler.current
+            var isLoading by remember { mutableStateOf(true) }
+
+            LaunchedEffect(key1 = true) {
+                delay(2000)
+                isLoading = false
+            }
             GameDetailsScreen(
                 imageContentState = viewModel.gameData,
                 dealDetailsState = viewModel.dealData,
                 onFavoriteClick = { viewModel.refreshFavoriteMovie() },
                 onDealClick = { uriHandler.openUri(it) },
-                onBackArrowClick = { navController.navigateUp() }
+                onBackArrowClick = { navController.navigateUp() },
+                isLoading = isLoading,
             )
         }
     }
