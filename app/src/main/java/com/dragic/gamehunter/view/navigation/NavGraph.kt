@@ -48,6 +48,7 @@ fun Navigation(
                 onThemeChange = onThemeChange,
                 onPageIncrement = { viewModel.incrementPageNumber() },
                 loadNextPage = { viewModel.loadNextPage() },
+                dealsNotEmpty = { viewModel.checkNotEmpty() }
             )
         }
         composable(route = Favorites.route) {

@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
@@ -21,18 +20,19 @@ import com.dragic.gamehunter.R
 import com.dragic.gamehunter.view.uicomponents.DealCard
 import com.dragic.gamehunter.view.uicomponents.ShimmerListItem
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
 
 @Composable
 fun HomeDeals(
     deals: List<DealViewState>,
     onDealClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    scrollState: LazyListState,
     onPageIncrement: () -> Unit,
     loadNextPage: () -> Unit,
+    dealsNotEmpty: () -> Boolean,
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    val scrollState = rememberLazyListState()
+    val isAtBottom = !scrollState.canScrollForward
 
     LaunchedEffect(key1 = true) {
         delay(3000)
@@ -68,19 +68,12 @@ fun HomeDeals(
         }
     }
 
-    if (deals.isNotEmpty()) {
-        LaunchedEffect(scrollState) {
-            snapshotFlow { scrollState.isScrollInProgress }
-                .filter { !it }
-                .collect {
-                    val totalItems = deals.size
-                    val lastVisibleItemIndex = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
-
-                    if (lastVisibleItemIndex >= totalItems - 1) {
-                        onPageIncrement()
-                        loadNextPage()
-                    }
-                }
+    LaunchedEffect(isAtBottom) {
+        if (isAtBottom) {
+            if (dealsNotEmpty()) {
+                onPageIncrement()
+                loadNextPage()
+            }
         }
     }
 }
