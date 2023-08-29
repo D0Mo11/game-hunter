@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -39,9 +40,12 @@ fun HomeScreen(
     onSortBySavingsClick: () -> Unit,
     onSortByReviewsClick: () -> Unit,
     theme: AppTheme,
-    onThemeChange: (AppTheme) -> Unit
+    onThemeChange: (AppTheme) -> Unit,
+    onPageIncrement: () -> Unit,
+    loadNextPage: () -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    val scrollState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -86,6 +90,9 @@ fun HomeScreen(
                         onDealClick(id)
                     },
                     modifier = modifier.fillMaxWidth(),
+                    scrollState = scrollState,
+                    onPageIncrement = onPageIncrement,
+                    loadNextPage = loadNextPage,
                 )
             }
             if (showDialog) {
@@ -145,3 +152,4 @@ fun HomeScreen(
         }
     }
 }
+

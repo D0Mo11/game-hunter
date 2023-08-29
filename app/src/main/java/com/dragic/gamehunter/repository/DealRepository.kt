@@ -35,7 +35,7 @@ class DealRepository @Inject constructor(
     private val gameDetails = MutableSharedFlow<GameDetailsEntity>()
     private val storeInfo = MutableSharedFlow<List<StoreInfoEntity>>()
 
-    suspend fun dealData(): List<DealEntity> = cheapSharkApi.getAllDeals().map { it.toDealEntity() }
+    suspend fun dealData(pageNumber: Int): List<DealEntity> = cheapSharkApi.getAllDeals(pageNumber).map { it.toDealEntity() }
 
     fun gameDetailsData(): Flow<GameDetailsEntity> =
         combine(

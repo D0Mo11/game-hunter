@@ -1,6 +1,7 @@
 package com.dragic.gamehunter.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -19,10 +20,25 @@ class HomeViewModel @Inject constructor(
     var dealData by mutableStateOf<List<DealViewState>>(emptyList())
         private set
 
+    private var pageNumber by mutableIntStateOf(1)
+
     init {
         viewModelScope.launch {
-            dealData = repository.dealData().map { it.toDealViewState() }
+            dealData = repository.dealData(pageNumber).map { it.toDealViewState() }
         }
+    }
+
+    fun loadNextPage() {
+        viewModelScope.launch {
+            dealData = buildList {
+                addAll(dealData)
+                addAll(repository.dealData(pageNumber).map { it.toDealViewState() })
+            }
+        }
+    }
+
+    fun incrementPageNumber() {
+        pageNumber++
     }
 
     fun fetchDealsByDealRating() {
