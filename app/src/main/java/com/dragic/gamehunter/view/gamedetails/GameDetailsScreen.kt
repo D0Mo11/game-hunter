@@ -16,6 +16,7 @@ import com.dragic.gamehunter.view.theme.Typography
 import com.dragic.gamehunter.view.uicomponents.GameDetailsTopBar
 import com.dragic.gamehunter.view.uicomponents.ImageContent
 import com.dragic.gamehunter.view.uicomponents.ImageWithGradient
+import com.dragic.gamehunter.view.uicomponents.ShimmerImageContent
 
 @Composable
 fun GameDetailsScreen(
@@ -25,6 +26,7 @@ fun GameDetailsScreen(
     onFavoriteClick: () -> Unit,
     onDealClick: (String) -> Unit,
     onBackArrowClick: () -> Unit,
+    isLoading: Boolean,
 ) {
     Scaffold(
         topBar = { GameDetailsTopBar(onArrowBackClicked = { onBackArrowClick() }) }
@@ -37,23 +39,29 @@ fun GameDetailsScreen(
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.details_image_height))
             ) {
-                if (imageContentState != null) {
-                    ImageWithGradient(
-                        thumbnail = imageContentState.thumbnail,
-                        content = {
-                            with(imageContentState) {
-                                ImageContent(
-                                    gameTitle = gameTitle,
-                                    lowestPrice = lowestPrice,
-                                    dateLowestPrice = dateLowestPrice,
-                                    isFavorite = isFavorite,
-                                    onFavoriteSelected = { onFavoriteClick() },
-                                )
-                            }
-                        },
-                        modifier = Modifier.matchParentSize()
-                    )
-                }
+                ShimmerImageContent(
+                    isLoading = isLoading,
+                    contentAfterLoading = {
+                        if (imageContentState != null) {
+                            ImageWithGradient(
+                                thumbnail = imageContentState.thumbnail,
+                                content = {
+                                    with(imageContentState) {
+                                        ImageContent(
+                                            gameTitle = gameTitle,
+                                            lowestPrice = lowestPrice,
+                                            dateLowestPrice = dateLowestPrice,
+                                            isFavorite = isFavorite,
+                                            onFavoriteSelected = { onFavoriteClick() },
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.matchParentSize()
+                            )
+                        }
+                    },
+                    modifier = modifier
+                )
             }
             Text(
                 modifier = Modifier
@@ -69,6 +77,7 @@ fun GameDetailsScreen(
                 deals = dealDetailsState,
                 onDealClick = { onDealClick(it) },
                 modifier = Modifier.fillMaxWidth(),
+                isLoading = isLoading,
             )
         }
     }
