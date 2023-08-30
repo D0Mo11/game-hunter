@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,15 +26,18 @@ fun HomeDeals(
     deals: List<DealViewState>,
     onDealClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    loadNextPage: () -> Unit,
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    val scrollState = rememberLazyListState()
+    val isAtBottom = !scrollState.canScrollForward
 
     LaunchedEffect(key1 = true) {
         delay(3000)
         isLoading = false
     }
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier, state = scrollState) {
         items(deals) { deal: DealViewState ->
             ShimmerListItem(
                 isLoading = isLoading,
@@ -59,6 +63,12 @@ fun HomeDeals(
                 },
                 modifier = modifier,
             )
+        }
+    }
+
+    LaunchedEffect(isAtBottom) {
+        if (isAtBottom) {
+            loadNextPage()
         }
     }
 }

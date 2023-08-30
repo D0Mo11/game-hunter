@@ -19,11 +19,29 @@ class HomeViewModel @Inject constructor(
     var dealData by mutableStateOf<List<DealViewState>>(emptyList())
         private set
 
+    private var pageNumber = 1
+
+    private var shouldIncrement = true
+
     init {
         viewModelScope.launch {
-            dealData = repository.dealData().map { it.toDealViewState() }
+            dealData = repository.dealData(pageNumber).map { it.toDealViewState() }
         }
     }
+
+    fun loadNextPage() {
+        if (!shouldIncrement || dealData.isEmpty()) return
+        pageNumber++
+        shouldIncrement = false
+        viewModelScope.launch {
+            dealData = buildList {
+                addAll(dealData)
+                addAll(repository.dealData(pageNumber).map { it.toDealViewState() })
+            }
+            shouldIncrement = true
+        }
+    }
+
 
     fun fetchDealsByDealRating() {
         viewModelScope.launch {

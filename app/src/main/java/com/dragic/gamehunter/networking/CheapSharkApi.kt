@@ -12,7 +12,7 @@ private const val REVIEWS = "Reviews"
 
 class CheapSharkApi @Inject constructor(private val client: HttpClient) {
 
-    suspend fun getAllDeals(): List<DealResponse> = client.get("$BASE_URL/deals").body()
+    suspend fun getAllDeals(pageNumber: Int): List<DealResponse> = client.get("$BASE_URL/deals?pageNumber=$pageNumber").body()
 
     suspend fun getGameDetails(gameId: Int): GameDetailsResponse = client.get("$BASE_URL/games?id=$gameId").body()
 

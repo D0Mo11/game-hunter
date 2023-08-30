@@ -45,7 +45,8 @@ fun Navigation(
                 onSortByReviewsClick = { viewModel.fetchDealsByReviews() },
                 onSortBySavingsClick = { viewModel.fetchDealsBySavings() },
                 theme = theme,
-                onThemeChange = onThemeChange
+                onThemeChange = onThemeChange,
+                loadNextPage = { viewModel.loadNextPage() },
             )
         }
         composable(route = Favorites.route) {
