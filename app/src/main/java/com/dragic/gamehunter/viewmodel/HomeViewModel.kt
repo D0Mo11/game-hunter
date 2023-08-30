@@ -30,6 +30,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadNextPage() {
+        if (!shouldIncrement || dealData.isEmpty()) return
+        pageNumber++
+        shouldIncrement = false
         viewModelScope.launch {
             dealData = buildList {
                 addAll(dealData)
@@ -39,14 +42,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun incrementPageNumber() {
-        if (shouldIncrement) {
-            pageNumber++
-            shouldIncrement = false
-        }
-    }
-
-    fun checkNotEmpty() = dealData.isNotEmpty()
 
     fun fetchDealsByDealRating() {
         viewModelScope.launch {

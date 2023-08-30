@@ -26,9 +26,7 @@ fun HomeDeals(
     deals: List<DealViewState>,
     onDealClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    onPageIncrement: () -> Unit,
     loadNextPage: () -> Unit,
-    dealsNotEmpty: () -> Boolean,
 ) {
     var isLoading by remember { mutableStateOf(true) }
     val scrollState = rememberLazyListState()
@@ -70,10 +68,7 @@ fun HomeDeals(
 
     LaunchedEffect(isAtBottom) {
         if (isAtBottom) {
-            if (dealsNotEmpty()) {
-                onPageIncrement()
-                loadNextPage()
-            }
+            loadNextPage()
         }
     }
 }

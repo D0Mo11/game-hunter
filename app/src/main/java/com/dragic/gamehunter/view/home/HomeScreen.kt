@@ -40,9 +40,7 @@ fun HomeScreen(
     onSortByReviewsClick: () -> Unit,
     theme: AppTheme,
     onThemeChange: (AppTheme) -> Unit,
-    onPageIncrement: () -> Unit,
     loadNextPage: () -> Unit,
-    dealsNotEmpty: () -> Boolean,
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -89,9 +87,7 @@ fun HomeScreen(
                         onDealClick(id)
                     },
                     modifier = modifier.fillMaxWidth(),
-                    onPageIncrement = onPageIncrement,
                     loadNextPage = loadNextPage,
-                    dealsNotEmpty = dealsNotEmpty,
                 )
             }
             if (showDialog) {
