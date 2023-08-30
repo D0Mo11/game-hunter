@@ -1,8 +1,11 @@
 package com.dragic.gamehunter.view.uicomponents
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,14 +19,18 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import com.dragic.gamehunter.R
 import com.dragic.gamehunter.view.theme.Typography
 
@@ -45,7 +52,7 @@ fun ImageContent(
             modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.details_title_text_horizontal_padding))
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.details_text_padding_small)))
-        Row() {
+        Row {
             Text(
                 text = stringResource(id = R.string.lowest_price_text),
                 style = Typography.labelSmall,
@@ -81,7 +88,7 @@ fun ImageContent(
                 .size(dimensionResource(id = R.dimen.favorite_box_size))
                 .clip(CircleShape)
                 .background(color = Color.White)
-                .clickable { onFavoriteSelected() }
+                .bounceClick { onFavoriteSelected() }
         ) {
             Image(
                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -92,14 +99,32 @@ fun ImageContent(
     }
 }
 
-@Preview
-@Composable
-fun ImageContentPreview() {
-    ImageContent(
-        gameTitle = "Counter:Strike Global Offensive",
-        lowestPrice = "3.99 $",
-        dateLowestPrice = "14/7/2023",
-        isFavorite = false,
-        onFavoriteSelected = { }
-    )
+fun Modifier.bounceClick(
+    scaleDown: Float = 0.9f,
+    onClick: () -> Unit
+) = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val animatable = remember {
+        Animatable(1f)
+    }
+
+    LaunchedEffect(key1 = isPressed) {
+        if (isPressed) {
+            animatable.animateTo(scaleDown)
+        } else animatable.animateTo(1f)
+    }
+
+    Modifier
+        .graphicsLayer {
+            val scale = animatable.value
+            scaleX = scale
+            scaleY = scale
+        }
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null
+        ) {
+            onClick()
+        }
 }
