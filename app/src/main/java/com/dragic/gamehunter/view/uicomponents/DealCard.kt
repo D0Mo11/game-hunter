@@ -20,11 +20,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dragic.gamehunter.R
@@ -80,26 +86,28 @@ fun DealCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row {
-                        Text(
-                            text = stringResource(id = R.string.deal_card_rating_label),
-                            fontSize = dimensionResource(id = R.dimen.deal_card_text_size).value.sp
-                        )
-                        Text(
-                            text = dealRating,
-                            style = Typography.bodyMedium
-                        )
+                        val dealRatingText = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontSize = dimensionResource(id = R.dimen.deal_card_text_size).value.sp)) {
+                                append(stringResource(id = R.string.deal_card_rating_label))
+                            }
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(dealRating)
+                            }
+                        }
+                        Text(text = dealRatingText)
                     }
                     Row(
                         modifier = Modifier.padding(end = dimensionResource(id = R.dimen.deal_card_padding))
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.deal_card_steam_rating_label),
-                            fontSize = dimensionResource(id = R.dimen.deal_card_text_size).value.sp
-                        )
-                        Text(
-                            text = steamRating,
-                            style = Typography.bodyMedium
-                        )
+                        val steamRatingText = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontSize = dimensionResource(id = R.dimen.deal_card_text_size).value.sp)) {
+                                append(stringResource(id = R.string.deal_card_steam_rating_label))
+                            }
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(steamRating)
+                            }
+                        }
+                        Text(text = steamRatingText)
                     }
                 }
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.deal_card_text_padding)))
@@ -120,15 +128,22 @@ fun DealCard(
                     Row(
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.deal_card_text_padding_horizontal))
                     ) {
-                        Text(
-                            text = normalPrice,
-                            style = Typography.bodySmall
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.deal_card_text_padding_small)))
-                        Text(
-                            text = salePrice,
-                            style = Typography.bodyMedium
-                        )
+                        val salePriceText = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    textDecoration = TextDecoration.LineThrough,
+                                    fontWeight = FontWeight.Light,
+                                    color = Color.Gray,
+
+                                    )
+                            ) {
+                                append("$normalPrice\t")
+                            }
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(salePrice)
+                            }
+                        }
+                        Text(text = salePriceText)
                     }
                 }
             }
