@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,8 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.dragic.gamehunter.R
-import com.dragic.gamehunter.view.theme.CardContainerColor
-import com.dragic.gamehunter.view.theme.Green
+import com.dragic.gamehunter.view.theme.ExtendedTheme
 import com.dragic.gamehunter.view.theme.Typography
 
 @Composable
@@ -55,7 +53,6 @@ fun DealCard(
             .clickable { onDealClick() }
             .focusable(),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.deal_card_radius)),
-        colors = CardDefaults.cardColors(containerColor = CardContainerColor)
     ) {
         Row(
             modifier = Modifier.fillMaxSize()
@@ -118,12 +115,13 @@ fun DealCard(
                     Text(
                         modifier = Modifier
                             .background(
-                                color = Green,
+                                color = ExtendedTheme.colors.dealBackgroundColor,
                                 shape = RectangleShape
                             )
                             .padding(horizontal = dimensionResource(id = R.dimen.deal_card_save_percentage_padding)),
                         text = stringResource(id = R.string.savings_template, savePercentage),
-                        style = Typography.bodyMedium
+                        style = Typography.bodyMedium,
+                        color = ExtendedTheme.colors.onDealBackgroundColor,
                     )
                     Row(
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.deal_card_text_padding_horizontal))
